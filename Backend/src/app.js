@@ -12,9 +12,10 @@ app.use(express.urlencoded({extended: true, limit: "16kb"}))
 
 //routes import
 import folderRouter from './routes/folder.routes.js';
-
+import fileRouter from './routes/file.routes.js'
 //routes declaration
 app.use("/api/v1/folders",folderRouter);
+app.use("/api/v1/files",fileRouter);
 
 
 export { app };
