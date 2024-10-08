@@ -305,7 +305,6 @@ function RootDirectory() {
                         >
                             <span className="ml-1 mt-1">{item.isOpen ? <FaFolderOpen/> : <FaFolderClosed/>} </span>
                             <span>{item.name}</span>
-                            <span>{item.isOpen ? '-' : '+'}</span>
                         </div>
                         {item.isOpen && item.subfolders.length > 0 && (
                             <div>
