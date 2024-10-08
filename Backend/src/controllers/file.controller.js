@@ -75,7 +75,7 @@ const renameFile = asyncHandler(async (req, res) => {
 });
 
 const deleteFile = asyncHandler(async (req, res) => {
-    const { fileId } = req.body;
+    const { fileId } = req.query;
 
     if (!fileId) {
         throw new ApiError(400, "fileId is required");
@@ -93,7 +93,7 @@ const deleteFile = asyncHandler(async (req, res) => {
 
 const moveFile = asyncHandler(async (req, res) => {
     const { fileId, targetFolderId } = req.body;
-
+    console.log("targetFolderRecieved:", targetFolderId);
     if (!fileId) {
         throw new ApiError(400, "fileId is required");
     }
@@ -113,9 +113,11 @@ const moveFile = asyncHandler(async (req, res) => {
     }
 
     // Update the file's folderId
+    console.log("Desired targetFolderId:", targetFolderId)
     file.folderId = targetFolderId; // This can be null if moving to root
     await file.save();
 
+    console.log("A file was moved")
     res.status(200).json(new ApiResponse(200, file, "File moved successfully"));
 });
 

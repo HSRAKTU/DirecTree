@@ -39,7 +39,7 @@ const createFolder = asyncHandler(async (req, res) => {
 })
 
 const getSubfoldersAndFiles = asyncHandler(async (req, res) => {
-    const { parentId } = req.body;
+    const parentId = req.query.parentId === 'bleh' ? null : req.query.parentId;
 
     // Check if parentId is provided
     if (parentId === undefined) {
@@ -98,7 +98,7 @@ const renameFolder = asyncHandler(async (req, res) => {
 });
 
 const deleteFolder = asyncHandler(async (req, res) => {
-    const { folderId } = req.body;
+    const { folderId } = req.query;
 
     // Check if folderId is provided
     if (!folderId) {
@@ -155,13 +155,12 @@ const moveFolder = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Target parent folder not found");
     }
 
-    // Check if the target folder is a subfolder of the folder being moved
     let currentFolder = targetFolder;
     while (currentFolder) {
         if (currentFolder._id.toString() === folderId) {
             throw new ApiError(400, "Cannot move folder into one of its subfolders");
         }
-        currentFolder = await Folder.findById(currentFolder.parentId);
+        currentFolder = await Folder.findById(currentFolder.parentId); // Traverse upwards
     }
 
     // Update parentId

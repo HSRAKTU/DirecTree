@@ -1,0 +1,7 @@
+/* 
+.border-blue-900 {
+    border: 2px solid blue; /* Ensure this is defined */
+    z-index: 10; /* Add a high z-index if needed */
+    position: relative; /* Ensure positioning is correct */
+} 
+*/
