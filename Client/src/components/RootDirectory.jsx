@@ -1,5 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { FaFolderClosed, FaFolderOpen } from "react-icons/fa6";
+import { CiFileOn } from "react-icons/ci";
+import { LuCheck, LuFilePlus2, LuFolderPlus, LuTrash2, LuX } from "react-icons/lu";
+
 
 
 function RootDirectory() {
@@ -244,6 +248,7 @@ function RootDirectory() {
 
     useEffect(() => {
         loadRootItems(); // Fetch the initial tree on component mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 
 
@@ -252,14 +257,14 @@ function RootDirectory() {
         const hoverCounter = {}; 
 
         return items.map(item => {
-            const marginLeft = `${level * 20}px`; // Set margin based on level
+            const marginLeft = `${level * 30}px`; // Set margin based on level
 
             if (item.type === 'directory') {
                 hoverCounter[item.id] = hoverCounter[item.id] || 0;
                 return (
                     <div 
                         key={item.id} 
-                        className={`${item.id == activeFolder ? "border-2 border-red-600":""} `}
+                        className={`flex flex-col ${item.id == activeFolder ? "border-2 border-gray-600":""} `}
                         draggable="true" 
                         onDragEnter={(e) => {
                             e.preventDefault();
@@ -296,9 +301,11 @@ function RootDirectory() {
                         <div 
                             style={{ marginLeft }} 
                             onClick={() => handleFolderClick(item.id)}
-                            className={`hover:cursor-pointer ${item.id === showDropOutline ? "border-2 border-blue-900" : "border-2 border-gray-400"}`}
+                            className={`flex space-x-2 p-1 items-stretch hover:cursor-pointer ${item.id === showDropOutline ? "border-2 border-blue-900" : ""} `}
                         >
-                            📁 {item.name} {item.isOpen ? '-' : '+'}
+                            <span className="ml-1 mt-1">{item.isOpen ? <FaFolderOpen/> : <FaFolderClosed/>} </span>
+                            <span>{item.name}</span>
+                            <span>{item.isOpen ? '-' : '+'}</span>
                         </div>
                         {item.isOpen && item.subfolders.length > 0 && (
                             <div>
@@ -312,7 +319,7 @@ function RootDirectory() {
                     <div 
                         key={item.id} 
                         style={{ marginLeft }} 
-                        className={item.id == activeFile ? "border-2 border-red-600 hover:cursor-pointer":"hover:cursor-pointer " }
+                        className={`flex space-x-2 p-1 ${item.id == activeFile ? "border-2 rounded-md border-red-400 hover:cursor-pointer":"hover:cursor-pointer " }`}
                         onClick={() => handleFileClick(item.id)}
                         draggable = "true"
                         onDragStart = {(e) => {
@@ -321,7 +328,8 @@ function RootDirectory() {
                             setActiveCard({ id: item.id, type: 'file' });
                         }}
                     >
-                        📄 {item.name}
+                       <span className="ml-1 mt-1"> <CiFileOn/> </span>
+                       <span>{item.name}</span>
                     </div>
                 );
             }
@@ -339,25 +347,44 @@ function RootDirectory() {
                 setDeleting(null)
                 setShowDropOutline(null)
             }} className="hover:cursor-pointer">Root Directory</h3> 
-            <div className="mx-2 px-2">
-                <button className="mx-2" onClick={() => setCreating('file')}>📄+</button>
-                <button className="mx-2" onClick={() => setCreating('folder')}>📁+</button>
+            <div className="flex justify-end border-2 h-8 border-y-gray-600 border-x-0">
+                <button className="mx-2 align-middle" onClick={() => setCreating('file')}>
+                    <LuFilePlus2 size={22}/>
+                </button>
+                <button className="mx-2 align-middle" onClick={() => setCreating('folder')}>
+                    <LuFolderPlus size={22}/>
+                </button>
                 {deleting && (
-                    <button className="mx-2" onClick={handleDelete}>🗑️-</button>
+                    <button className="mx-2 align-middle" onClick={handleDelete}>
+                        <LuTrash2 size={22} />
+                    </button>
+                )}
+                {!deleting && (
+                    <button className="mx-2 align-middle w-5" onClick={handleDelete}>
+                    </button>
                 )}
             </div>
             {creating && (
-                <div className="mx-2 px-2">
+                <div className="mt-1 mx-2 px-2 flex">
                     <input
                         type="text"
-                        placeholder={creating === 'file' ? 'Enter file name (e.g., file.txt)' : 'Enter folder name'}
+                        placeholder={creating === 'file' ? 'file name' : 'folder name'}
                         value={newItemName}
-                        className="text-black"
+                        className="text-black block w-full rounded-md border-0 h-7 ring-1 px-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-zinc-900 sm:text-sm sm:leading-6"
                         onChange={(e) => setNewItemName(e.target.value)}
                     />
-                    <button onClick={handleCreate}>Create</button>
-                    <button onClick={() => setCreating(null)}>Cancel</button> {/* Cancel button */}
+                   <div className="flex ml-2 space-x-1">
+                        <button onClick={handleCreate} className="pl-1 h-7 w-7 rounded-md  hover:bg-stone-800">
+                            <LuCheck />
+                        </button>
+                        <button onClick={() => setCreating(null)} className="pl-1 h-7 w-7 rounded-md  hover:bg-stone-800">
+                            <LuX />
+                        </button>
+                   </div>
                 </div>
+            )}
+            {!creating && (
+                <div className="w-2 h-7 p-2"></div>
             )}
             
             {renderTree(treeData)} {/* Render the tree */}

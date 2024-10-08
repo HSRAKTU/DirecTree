@@ -7,7 +7,7 @@ function App() {
     document.body.classList.toggle("dark");
   }
   return (
-    <div className="h-screen bg-blue-300 dark:bg-black">
+    <div className="h-screen bg-black dark:bg-black">
       <button className="hover:cursor-pointer" onClick={()=> darkModeHandler()}>
       {
           
